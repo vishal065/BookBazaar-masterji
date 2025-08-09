@@ -1,12 +1,15 @@
 import { Router } from "express"
+import { generateApiKey, getMe, login, register } from "./auth.controller"
+import { authMiddleware } from "../../middlewares/auth.middleware"
 
 
 
 const router = Router()
 
-router.get('/login', (req, res) => {
-    res.send('login')
-})
+router.post("/register", register)
+router.post("/login", login)
+router.post("/api-key", authMiddleware, generateApiKey)
+router.get("/me", authMiddleware, getMe)
 
 
 
