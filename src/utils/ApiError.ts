@@ -6,8 +6,7 @@ import EnvSecret, { EApplicationEnviroment } from "../constants/envVariables";
 class ApiErrorHandler extends Error {
     public statusCode: number;
     public errors: any[] | null;
-
-    public request: object | null;
+    public request?: object;
 
     constructor(
         statusCode: number = 500,
@@ -19,36 +18,41 @@ class ApiErrorHandler extends Error {
         super(message);
         this.statusCode = statusCode;
         this.errors = errors;
-        this.request = req
-            ? {
+
+        const isProduction =
+            EnvSecret.NODE_ENV === (EApplicationEnviroment.PRODUCTION as string);
+
+     
+            
+
+        // Assign request details only if not production
+        if (!isProduction && req) {
+            this.request = {
                 ip: req.ip,
                 method: req.method,
                 url: req.originalUrl,
-            }
-            : null;
+            };
+        }
 
-        //Production Env check
-        if (EnvSecret.NODE_ENV === (EApplicationEnviroment.PRODUCTION as string) && req) {
-            this.request = null;
+        if (!isProduction) {
+            if (stack) {
+                this.stack = stack;
+            } else {
+                Error.captureStackTrace(this, this.constructor);
+            }
         }
-        
-        if (stack) {
-            this.stack = stack;
-        } else {
-            Error.captureStackTrace(this, this.constructor);
-        }
+
     }
     public toJSON() {
+        const isProduction =
+            EnvSecret.NODE_ENV === (EApplicationEnviroment.PRODUCTION as string);
+
         return {
             statusCode: this.statusCode,
             message: this.message,
             errors: this.errors,
-            // Include request details only if they're available (and allowed)
-            ...(this.request ? { request: this.request } : {}),
-            // Optionally include the stack trace in non-production environments
-            ...(EnvSecret.NODE_ENV !== (EApplicationEnviroment.PRODUCTION as string)
-                ? { stack: this.stack }
-                : {}),
+            ...(!isProduction && this.request ? { request: this.request } : {}),
+            ...(!isProduction && this.stack ? { stack: this.stack } : {}),
         };
     }
 }

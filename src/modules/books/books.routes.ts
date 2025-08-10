@@ -1,7 +1,7 @@
 import { Router } from "express"
-import asyncHandler from "src/utils/asyncHandler"
 import { addBook, getBooks, getSingleBook, updateBook } from "./books.controller"
-import { authMiddleware } from "src/middlewares/auth.middleware"
+import { authMiddleware } from "../../middlewares/auth.middleware"
+import asyncHandler from "../../utils/asyncHandler"
 
 
 const router = Router()

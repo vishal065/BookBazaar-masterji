@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm"
 import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import { db } from "../../config/db"
-import EnvSecret from "../../constants/envVariables"
+import EnvSecret, { EApplicationEnviroment } from "../../constants/envVariables"
 import { Users } from "../../model/user.model"
 import { ApiKeys } from "../../model/api-key.model"
 import { ApiResponse } from "../../utils/ApiResponse"
@@ -52,7 +52,7 @@ const register = async (req: Request, res: Response) => {
             return
         }
 
-        res.status(201).json(ApiResponse(201, null, "User registered successfully"))
+        res.status(201).json(ApiResponse(201, undefined, "User registered successfully"))
         return
     } catch (error) {
         res.status(500).json(ApiError(500, "Server error", req, ["An error occurred while registering the user"]))
@@ -99,7 +99,7 @@ const login = async (req: Request, res: Response) => {
 
         res.cookie("token", token, {
             httpOnly: true,
-            secure: EnvSecret.NODE_ENV !== "development",
+            secure: EnvSecret.NODE_ENV !== EApplicationEnviroment.DEVELOPMENT,
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });

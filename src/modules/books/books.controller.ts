@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { eq, sql } from 'drizzle-orm';
 import { db } from '../../config/db';
 import { Books } from '../../model/Books.model';
-import { ApiResponse } from 'src/utils/ApiResponse';
-import { ApiError } from 'src/utils/ApiError';
+import { ApiResponse } from '../../utils/ApiResponse';
+import { ApiError } from '../../utils/ApiError';
 
 
 
@@ -134,7 +134,7 @@ const deleteBook = async (_req: Request, res: Response) => {
             res.status(500).json(ApiError(500, "Failed to delete book", _req, ["An error occurred while deleting the book"]));
             return
         }
-        
+
         res.status(200).json(ApiResponse(200, undefined, "Book deleted successfully"));
         return
     } catch (error: any) {

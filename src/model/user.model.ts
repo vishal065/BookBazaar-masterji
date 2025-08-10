@@ -8,7 +8,6 @@ const Users = pgTable("users", {
     password: varchar("password", { length: 255 }).notNull(),
     role: userRoleEnum('role').notNull().default('CUSTOMER'),
     createdAt: timestamp("created_at").defaultNow(),
-    lastLogin: timestamp("last_login").defaultNow(),
 })
 
 export { Users }
