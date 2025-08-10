@@ -1,18 +1,13 @@
 import { Router } from "express"
-import asyncHandler from "../utils/asyncHandler"
-import { generateApiKey, getMe, login, logout, register } from "./auth/auth.controller"
+import { AuthRouter } from "./auth/auth.routes"
+import { BooksRouter } from "./books/books.routes"
 
 
 
 const router = Router()
 
-router.route("/register").post(asyncHandler(register))
-router.route("/login").post(asyncHandler(login))
-router.route("/me").get(asyncHandler(getMe))
-router.route("/logout").post(asyncHandler(logout))
-
-
-router.route("/api-key").get(asyncHandler(generateApiKey))
+router.use("/auth", AuthRouter)
+router.use("/books", BooksRouter)
 
 
 

@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { generateApiKey, getMe, login, register } from "./auth.controller"
+import { generateApiKey, getMe, login, logout, register } from "./auth.controller"
 import { authMiddleware } from "../../middlewares/auth.middleware"
 import asyncHandler from "../../utils/asyncHandler"
 
@@ -7,11 +7,15 @@ import asyncHandler from "../../utils/asyncHandler"
 
 const router = Router()
 
-router.post("/register", register)
-router.post("/login", login)
-router.post("/api-key", authMiddleware, asyncHandler(generateApiKey))
-router.get("/me", authMiddleware, getMe)
+router.route("/register").post(asyncHandler(register))
+router.route("/login").post(asyncHandler(login))
+router.route("/me").get(authMiddleware, asyncHandler(getMe))
+router.route("/logout").post(authMiddleware, asyncHandler(logout))
+
+
+router.route("/api-key").get(asyncHandler(generateApiKey))
 
 
 
-export default router
+
+export { router as AuthRouter }
