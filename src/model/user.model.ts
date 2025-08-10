@@ -1,12 +1,14 @@
-import { pgTable, varchar, boolean, timestamp, uuid } from "drizzle-orm/pg-core"
+import { pgTable, varchar, timestamp, uuid, pgEnum } from "drizzle-orm/pg-core"
 
-const usersModel = pgTable("users", {
+export const userRoleEnum = pgEnum("user_role", ["ADMIN", "CUSTOMER"]);
+
+const Users = pgTable("users", {
     id: uuid('id').primaryKey().defaultRandom(),
     email: varchar("email", { length: 255 }).unique().notNull(),
     password: varchar("password", { length: 255 }).notNull(),
-    isAdmin: boolean("is_admin").default(false).notNull(),
+    role: userRoleEnum('role').notNull().default('CUSTOMER'),
     createdAt: timestamp("created_at").defaultNow(),
     lastLogin: timestamp("last_login").defaultNow(),
 })
 
-export { usersModel }
+export { Users }

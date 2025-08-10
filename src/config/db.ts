@@ -3,21 +3,24 @@ import { Pool } from 'pg';
 import EnvSecret from '../constants/envVariables';
 
 
-const neonConnectionString = EnvSecret.DATABASE_URL;
 
 // Initialize the connection pool with Neon DB connection string
 const pool = new Pool({
-    connectionString: neonConnectionString,
-
+    connectionString: EnvSecret.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false,
+    },
 });
 
 // Drizzle ORM setup with the pool
-const db = drizzle(pool);
+const db = drizzle(pool, {
+    logger: true,
+});
+
+
 
 
 export { db }
-
-
 
 
 //TODO for local connection

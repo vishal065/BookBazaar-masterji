@@ -1,15 +1,18 @@
 import { boolean, pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
-import { usersModel } from "./user.model";
+import { Users } from "./user.model";
 
-const apiKeysModel = pgTable("api_keys", {
+const ApiKeys = pgTable("api_keys", {
     id: uuid("id").primaryKey().defaultRandom(),
     key: text("key").notNull().unique(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+
     userId: uuid("user_id")
         .notNull()
-        .references(() => usersModel.id),
+        .references(() => Users.id),
+
     isActive: boolean("is_active").default(true),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+    expiresAt: timestamp("expires_at")
 });
 
-export { apiKeysModel }
+export { ApiKeys }

@@ -5,19 +5,20 @@ import jwt from "jsonwebtoken"
 import crypto from "crypto"
 import { db } from "../../config/db"
 import EnvSecret from "../../constants/envVariables"
-import { usersModel } from "../../model/user.model"
-import { apiKeysModel } from "../../model/api-key.model"
+import { Users } from "../../model/user.model"
+import { ApiKeys } from "../../model/api-key.model"
 import { ApiResponse } from "../../utils/ApiResponse"
 import { ApiError } from "../../utils/ApiError"
 
 
-export const register = async (req: Request, res: Response) => {
+const register = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body
+        const { superAdminKey } = req.query;
 
         const existingUser = await db.select()
-            .from(usersModel)
-            .where(eq(usersModel.email, email))
+            .from(Users)
+            .where(eq(Users.email, email))
             .limit(1)
 
         if (existingUser.length > 0) {
@@ -27,23 +28,30 @@ export const register = async (req: Request, res: Response) => {
 
         const hashedPassword = await bcrypt.hash(password, 10)
 
+        let userRole: "ADMIN" | "CUSTOMER" = "CUSTOMER";
+
+        if (superAdminKey === EnvSecret.SUPER_ADMIN_KEY) {
+            userRole = "ADMIN";
+        }
+
+
         const userToInsert = {
             email,
             password: hashedPassword,
-            isAdmin: false,
+            role: userRole,
             createdAt: new Date(),
             lastLogin: new Date(),
         }
 
-        const [result] = await db.insert(usersModel)
+        const [result] = await db.insert(Users)
             .values(userToInsert)
-            .returning({ id: usersModel.id })
+            .returning({ id: Users.id })
 
         if (!result) {
             res.status(500).json(ApiError(500, "Failed to register user", req, ["An error occurred while registering the user"]))
             return
         }
-        
+
         res.status(201).json(ApiResponse(201, null, "User registered successfully"))
         return
     } catch (error) {
@@ -52,13 +60,13 @@ export const register = async (req: Request, res: Response) => {
     }
 }
 
-export const login = async (req: Request, res: Response) => {
+const login = async (req: Request, res: Response) => {
     try {
         const { email, password } = req.body
 
         const [user] = await db.select()
-            .from(usersModel)
-            .where(eq(usersModel.email, email))
+            .from(Users)
+            .where(eq(Users.email, email))
             .limit(1)
 
         if (!user) {
@@ -84,7 +92,7 @@ export const login = async (req: Request, res: Response) => {
         const { password: userPassword, ...logedinUser } = user; // Exclude password from user object
 
         const token = jwt.sign(
-            { userId: user.id, role: user.isAdmin },
+            { userId: user.id, role: user.role },
             EnvSecret.JWT_SECRET!,
             { expiresIn: "7d" },
         );
@@ -116,9 +124,9 @@ export const login = async (req: Request, res: Response) => {
     }
 }
 
-export const generateApiKey = async (req: Request, res: Response) => {
+const generateApiKey = async (req: Request, res: Response) => {
     try {
-        const userId = req?.user?.id
+        const userId = req.user?.id!
         const key = crypto.randomBytes(24).toString("hex")
 
         if (!userId) {
@@ -126,12 +134,12 @@ export const generateApiKey = async (req: Request, res: Response) => {
             return
         }
 
-        const result = await db.insert(apiKeysModel)
+        const result = await db.insert(ApiKeys)
             .values({
                 userId,
                 key,
             })
-            .returning({ id: apiKeysModel.id })
+            .returning({ id: ApiKeys.id })
 
         if (!result) {
             res.status(500).json(ApiError(500, "Failed to generate API key", req, ["An error occurred while generating API key"]))
@@ -147,13 +155,13 @@ export const generateApiKey = async (req: Request, res: Response) => {
     }
 }
 
-export const getMe = async (req: Request, res: Response) => {
+const getMe = async (req: Request, res: Response) => {
     try {
         if (!req.user) {
             res.status(401).json(ApiError(401, "Unauthorized", req, ["User not authenticated"]))
             return
         }
-        const [user] = await db.select().from(usersModel).where(eq(usersModel.id, req.user.id)).limit(1)
+        const [user] = await db.select().from(Users).where(eq(Users.id, req.user.id)).limit(1)
 
         if (!user) {
             res.status(404).json(ApiError(404, "User not found", req, ["No user found with the provided ID"]))
@@ -166,4 +174,28 @@ export const getMe = async (req: Request, res: Response) => {
         res.status(500).json(ApiError(500, "Server error", req, ["An error occurred while retrieving user information"]))
         return
     }
+}
+
+
+const logout = async (_req: Request, res: Response) => {
+    try {
+        const userId = _req?.user?.id
+        if (!userId) {
+            res.status(400).json(ApiError(400, "Invalid request", _req, ["User ID is not provided"]))
+            return
+        }
+        res.clearCookie("token")
+        res.status(200).json(ApiResponse(200, null, "Logout successful"))
+        return
+    } catch (error) {
+
+    }
+}
+
+export {
+    register,
+    login,
+    logout,
+    generateApiKey,
+    getMe
 }

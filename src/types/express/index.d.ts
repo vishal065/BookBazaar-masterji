@@ -1,4 +1,4 @@
-import { User } from "../model/user.model"
+import type { User } from "../model/user.model"
 
 declare global {
   namespace Express {
@@ -6,8 +6,8 @@ declare global {
       user?: {
         id: string;
         email: string;
-        isAdmin: boolean;
-      }
+        role: "ADMIN" | "CUSTOMER";
+      };
     }
   }
 }

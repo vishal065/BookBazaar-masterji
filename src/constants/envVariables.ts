@@ -11,6 +11,8 @@ class EnvSecret {
 
     public static readonly NODE_ENV = process.env.NODE_ENV || "development"
     public static readonly API_KEY_SECRET = process.env.API_KEY_SECRET
+
+    public static readonly SUPER_ADMIN_KEY = process.env.SUPER_ADMIN_KEY
 }
 
 export default EnvSecret

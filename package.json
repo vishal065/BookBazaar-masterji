@@ -7,8 +7,9 @@
     "dev": "nodemon",
     "dev2": "nodemon --watch src --ext ts --exec 'ts-node --source-map -r dotenv/config -r tsconfig-paths/register src/index.ts'",
     "start": "node dist/server.js",
-    "drizzle:push": "drizzle-kit push",
-    "drizzle:generate": "drizzle-kit generate"
+    "build": "tsc",
+    "migrate:generate": "drizzle-kit generate",
+    "migrate:push": "drizzle-kit push"
   },
   "keywords": [],
   "author": "",
@@ -21,7 +22,7 @@
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
-    "drizzle-orm": "^0.44.3",
+    "drizzle-orm": "^0.44.4",
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
