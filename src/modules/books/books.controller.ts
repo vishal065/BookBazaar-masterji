@@ -4,6 +4,7 @@ import { db } from '../../config/db';
 import { Books } from '../../model/Books.model';
 import { ApiResponse } from '../../utils/ApiResponse';
 import { ApiError } from '../../utils/ApiError';
+import { Reviews } from 'src/model/Reviews.model';
 
 
 
@@ -58,6 +59,7 @@ const getBooks = async (req: Request, res: Response) => {
         const books = await db
             .select()
             .from(Books)
+            .leftJoin(Reviews, eq(Books.id, Reviews.bookId))
             .limit(limit)
             .offset(offset);
 
@@ -104,6 +106,7 @@ const getSingleBook = async (_req: Request, res: Response) => {
         const [book] = await db.select()
             .from(Books)
             .where(eq(Books.id, id))
+            .leftJoin(Reviews, eq(Books.id, Reviews.bookId))
             .limit(1);
 
         if (!book) {
@@ -128,6 +131,8 @@ const deleteBook = async (_req: Request, res: Response) => {
             return
         }
 
+        //No Need to delete reviews and from cart separately as they are linked to the book
+        //and will be deleted automatically if foreign key constraints are set with ON DELETE CASCADE
         const [book] = await db.delete(Books).where(eq(Books.id, id)).returning();
 
         if (!book) {

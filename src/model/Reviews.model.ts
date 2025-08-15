@@ -4,7 +4,7 @@ import { Users } from "./user.model";
 
 export const Reviews = pgTable("reviews", {
     id: uuid("id").primaryKey().defaultRandom(),
-    bookId: uuid("book_id").references(() => Books.id).notNull(),
+    bookId: uuid("book_id").references(() => Books.id, { onDelete: "cascade" }).notNull(),
     userId: uuid("user_id").references(() => Users.id).notNull(),
     rating: integer("rating").notNull(),
     comment: text("comment"),

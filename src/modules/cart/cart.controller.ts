@@ -49,7 +49,7 @@ const addToCart = async (req: Request, res: Response) => {
         return
 
     } catch (error) {
-         res.status(500).json(ApiError(500, "Server error", req, ["An error occurred while retrieving the book"]))
+        res.status(500).json(ApiError(500, "Server error", req, ["An error occurred while retrieving the book"]))
         return
 
     }
@@ -96,8 +96,19 @@ const getCartItems = async (req: Request, res: Response) => {
         }
 
         const items = await db
-            .select()
+            .select({
+                id: CartItems.id,
+                quantity: CartItems.quantity,
+                bookId: Books.id,
+                title: Books.title,
+                author: Books.author,
+                price: Books.price,
+                isbn: Books.isbn,
+                createdAt: CartItems.createdAt,
+                updatedAt: CartItems.updatedAt,
+            })
             .from(CartItems)
+            .leftJoin(Books, eq(Books.id, CartItems.bookId))
             .where(eq(CartItems.userId, userId))
             .execute();
 
@@ -106,7 +117,9 @@ const getCartItems = async (req: Request, res: Response) => {
             return
         }
 
-        res.status(200).json(ApiResponse(200, items, "Cart items retrieved successfully"));
+        const subtotal = items.reduce((sum, r) => sum + Number(r.price ?? 0) * r.quantity, 0);
+
+        res.status(200).json(ApiResponse(200, { items, subtotal }, "Cart items retrieved successfully"));
         return
     } catch (error) {
         res.status(500).json(ApiError(500, "Server error", req, ["An error occurred while retrieving cart items"]));
@@ -119,6 +132,8 @@ const updateCart = async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = req.user?.id
         const quantity = +req.body.quantity
+        const { bookId } = req.body
+
 
         if (!userId) {
             res.status(400).json(ApiError(400, "unauthorized", req, ["User ID is not provided"]))
@@ -136,7 +151,7 @@ const updateCart = async (req: Request, res: Response) => {
 
         if (quantity === 0) {
             const [cartItem] = await db.delete(CartItems)
-                .where(and(eq(CartItems.id, id), eq(CartItems.userId, userId)))
+                .where(and(eq(CartItems.id, id), eq(CartItems.userId, userId), eq(CartItems.bookId, bookId)))
                 .returning()
 
             if (!cartItem) {
@@ -147,6 +162,20 @@ const updateCart = async (req: Request, res: Response) => {
             return
         }
 
+        const [book] = await db.select()
+            .from(Books)
+            .where(eq(Books.id, bookId))
+            .limit(1)
+
+        if (!book) {
+            res.status(404).json(ApiError(404, "Book not found", req, ["No book found with the provided ID"]))
+            return
+        }
+
+        if (book.stock < quantity) {
+            res.status(400).json(ApiError(400, "Insufficient stock", req, ["Not enough stock available for the requested quantity"]))
+            return
+        }
 
         const [cartItem] = await db.update(CartItems)
             .set({ quantity })
