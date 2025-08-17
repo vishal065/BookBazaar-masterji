@@ -1,1 +1,0 @@
-CREATE TYPE "public"."user_role" AS ENUM('ADMIN', 'CUSTOMER');

@@ -2,8 +2,8 @@ import { Router } from "express"
 import { addBook, deleteBook, getBooks, getSingleBook, updateBook } from "./books.controller"
 import { authMiddleware } from "../../middlewares/auth.middleware"
 import asyncHandler from "../../utils/asyncHandler"
-import { validateBody } from "src/middlewares/validateBody.middleware"
-import { BookSchema } from "src/validation/books.validation"
+import { validateBody } from "../../middlewares/validateBody.middleware"
+import { BookSchema } from "../../validation/books.validation"
 
 
 const router = Router()

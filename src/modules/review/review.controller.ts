@@ -1,9 +1,9 @@
 import { and, eq } from 'drizzle-orm';
 import { Request, Response } from 'express';
-import { db } from 'src/config/db';
-import { Reviews } from 'src/model/Reviews.model';
-import { ApiError } from 'src/utils/ApiError';
-import { ApiResponse } from 'src/utils/ApiResponse';
+import { db } from '../../config/db';
+import { Reviews } from '../../model/Reviews.model';
+import { ApiError } from '../../utils/ApiError';
+import { ApiResponse } from '../../utils/ApiResponse';
 
 const addReview = async (req: Request, res: Response) => {
     try {

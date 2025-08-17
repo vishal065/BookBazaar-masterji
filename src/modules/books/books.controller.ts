@@ -4,7 +4,7 @@ import { db } from '../../config/db';
 import { Books } from '../../model/Books.model';
 import { ApiResponse } from '../../utils/ApiResponse';
 import { ApiError } from '../../utils/ApiError';
-import { Reviews } from 'src/model/Reviews.model';
+import { Reviews } from '../../model/Reviews.model';
 
 
 

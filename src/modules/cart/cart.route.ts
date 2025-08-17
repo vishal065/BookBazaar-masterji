@@ -2,8 +2,8 @@ import express from "express";
 import asyncHandler from "../../utils/asyncHandler";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { addToCart, getCartItems, removeFromCart, updateCart } from "./cart.controller";
-import { validateBody } from "src/middlewares/validateBody.middleware";
-import { cartSchema } from "src/validation/cart.validation";
+import { validateBody } from "../../middlewares/validateBody.middleware";
+import { cartSchema } from "../../validation/cart.validation";
 
 const router = express.Router();
 
