@@ -61,12 +61,8 @@
           "name": "api_keys_user_id_users_id_fk",
           "tableFrom": "api_keys",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -76,9 +72,7 @@
         "api_keys_key_unique": {
           "name": "api_keys_key_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "key"
-          ]
+          "columns": ["key"]
         }
       },
       "policies": {},
@@ -154,9 +148,7 @@
         "books_isbn_unique": {
           "name": "books_isbn_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "isbn"
-          ]
+          "columns": ["isbn"]
         }
       },
       "policies": {},
@@ -213,12 +205,8 @@
           "name": "cart_items_user_id_users_id_fk",
           "tableFrom": "cart_items",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -226,12 +214,8 @@
           "name": "cart_items_book_id_books_id_fk",
           "tableFrom": "cart_items",
           "tableTo": "books",
-          "columnsFrom": [
-            "book_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["book_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -294,12 +278,8 @@
           "name": "orders_user_id_users_id_fk",
           "tableFrom": "orders",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -387,12 +367,8 @@
           "name": "payments_order_id_orders_id_fk",
           "tableFrom": "payments",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -402,23 +378,17 @@
         "payments_provider_order_id_unique": {
           "name": "payments_provider_order_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "provider_order_id"
-          ]
+          "columns": ["provider_order_id"]
         },
         "payments_provider_payment_id_unique": {
           "name": "payments_provider_payment_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "provider_payment_id"
-          ]
+          "columns": ["provider_payment_id"]
         },
         "payments_provider_signature_unique": {
           "name": "payments_provider_signature_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "provider_signature"
-          ]
+          "columns": ["provider_signature"]
         }
       },
       "policies": {},
@@ -481,12 +451,8 @@
           "name": "reviews_book_id_books_id_fk",
           "tableFrom": "reviews",
           "tableTo": "books",
-          "columnsFrom": [
-            "book_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["book_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -494,12 +460,8 @@
           "name": "reviews_user_id_users_id_fk",
           "tableFrom": "reviews",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -556,9 +518,7 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -621,12 +581,8 @@
           "name": "order_items_order_id_orders_id_fk",
           "tableFrom": "order_items",
           "tableTo": "orders",
-          "columnsFrom": [
-            "order_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["order_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         },
@@ -634,12 +590,8 @@
           "name": "order_items_book_id_books_id_fk",
           "tableFrom": "order_items",
           "tableTo": "books",
-          "columnsFrom": [
-            "book_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["book_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -655,20 +607,12 @@
     "public.status": {
       "name": "status",
       "schema": "public",
-      "values": [
-        "pending",
-        "paid",
-        "failed",
-        "refunded"
-      ]
+      "values": ["pending", "paid", "failed", "refunded"]
     },
     "public.user_role": {
       "name": "user_role",
       "schema": "public",
-      "values": [
-        "ADMIN",
-        "CUSTOMER"
-      ]
+      "values": ["ADMIN", "CUSTOMER"]
     }
   },
   "schemas": {},

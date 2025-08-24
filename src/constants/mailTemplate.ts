@@ -1,37 +1,41 @@
 type itemType = {
-    id: string;
-    orderId: string;
-    bookId: string;
-    quantity: number;
-    price: string;
-}[]
+  id: string;
+  orderId: string;
+  bookId: string;
+  quantity: number;
+  price: string;
+}[];
 
 type dbBooksType = {
-    id: string;
-    title: string;
-    price: string;
-    stock: number;
-}[]
+  id: string;
+  title: string;
+  price: string;
+  stock: number;
+}[];
 
 export function generateOrderTableData(items: itemType, dbBooks: dbBooksType) {
-    return items.map(i => {
-        const b = dbBooks.find(bb => bb.id === i.bookId);
-        const title = b?.title ?? `Book ID: ${i.bookId}`;
-        const qty = i.quantity;
-        const total = (qty * Number(i.price)).toFixed(2);
+  return items
+    .map((i) => {
+      const b = dbBooks.find((bb) => bb.id === i.bookId);
+      const title = b?.title ?? `Book ID: ${i.bookId}`;
+      const qty = i.quantity;
+      const total = (qty * Number(i.price)).toFixed(2);
 
-        return `
+      return `
     <tr>
       <td style="padding: 8px 10px; border-bottom: 1px solid #eee;">${title} × ${qty}</td>
       <td style="padding: 8px 10px; text-align: right; border-bottom: 1px solid #eee;">₹${total}</td>
     </tr>
   `;
-    }).join("");
-
+    })
+    .join("");
 }
 
-export function generateOrderEmailHTML(order: { id: string; totalAmount: number }, itemLines: string) {
-    const emailHTML = `
+export function generateOrderEmailHTML(
+  order: { id: string; totalAmount: number },
+  itemLines: string,
+) {
+  const emailHTML = `
 <div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 30px;">
   <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
 
@@ -71,12 +75,5 @@ export function generateOrderEmailHTML(order: { id: string; totalAmount: number 
   </div>
 </div>
 `;
-    return emailHTML;
+  return emailHTML;
 }
-
-
-
-
-
-
-// You can now use `emailHTML` to send via your email system

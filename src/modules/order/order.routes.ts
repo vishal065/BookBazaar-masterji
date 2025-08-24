@@ -1,7 +1,13 @@
 import express from "express";
 import asyncHandler from "../../utils/asyncHandler";
 import { authMiddleware } from "../../middlewares/auth.middleware";
-import { cancelOrder, getOrderById, listMyOrders, placeOrder, verifyPayment } from "./order.controller";
+import {
+  cancelOrder,
+  getOrderById,
+  listMyOrders,
+  placeOrder,
+  verifyPayment,
+} from "./order.controller";
 
 const router = express.Router();
 
