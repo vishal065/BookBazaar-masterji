@@ -36,7 +36,7 @@ const register = async (req: Request, res: Response) => {
 
     let userRole: "ADMIN" | "CUSTOMER" = "CUSTOMER";
 
-    if (superAdminKey === EnvSecret.SUPER_ADMIN_KEY) {
+    if (superAdminKey === EnvSecret.SUPER_ADMIN_KEY && EnvSecret.SUPER_ADMIN_KEY != undefined) {
       userRole = "ADMIN";
     }
 
@@ -193,7 +193,7 @@ const logout = async (_req: Request, res: Response) => {
     res.clearCookie("token");
     res.status(200).json(ApiResponse(200, null, "Logout successful"));
     return;
-  } catch (error) {}
+  } catch (error) { }
 };
 
 export { register, login, logout, getMe };
