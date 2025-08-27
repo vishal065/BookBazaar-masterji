@@ -8,7 +8,7 @@ import { ApiResponse } from "../../utils/ApiResponse";
 
 const addToCart = async (req: Request, res: Response) => {
   try {
-    const { bookId, ...data } = req.body;
+    const data = req.body;
     const userId = req.user?.id;
 
     if (!userId) {
@@ -21,7 +21,7 @@ const addToCart = async (req: Request, res: Response) => {
     const [book] = await db
       .select()
       .from(Books)
-      .where(eq(Books.id, bookId))
+      .where(eq(Books.id, data.bookId))
       .limit(1);
 
     if (!book) {
@@ -38,7 +38,8 @@ const addToCart = async (req: Request, res: Response) => {
     const [cart] = await db
       .select()
       .from(CartItems)
-      .where(and(eq(Books.id, book.id), eq(CartItems.userId, userId)))
+      .leftJoin(Books, eq(CartItems.bookId, Books.id))
+      .where(and(eq(Books.id, data.bookId), eq(CartItems.userId, userId)))
       .limit(1);
 
     if (cart) {
@@ -52,7 +53,7 @@ const addToCart = async (req: Request, res: Response) => {
 
     const [cartItem] = await db
       .insert(CartItems)
-      .values({ ...data, userId, bookId: book.id })
+      .values({ userId, bookId: data.bookId, quantity: data.quantity })
       .returning();
 
     if (!cartItem) {
@@ -70,12 +71,14 @@ const addToCart = async (req: Request, res: Response) => {
       .status(200)
       .json(ApiResponse(200, cartItem, "Book added to cart successfully"));
     return;
-  } catch (error) {
+
+  } catch (error: any) {
+    console.error("Error adding to cart:", error);
     res
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          "An error occurred while retrieving the book",
+          error.cause ? error.cause : error.message || "An error occurred while retrieving the book",
         ]),
       );
     return;
@@ -123,12 +126,12 @@ const removeFromCart = async (req: Request, res: Response) => {
       .status(200)
       .json(ApiResponse(200, cartItem, "Cart item removed successfully"));
     return;
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          "An error occurred while removing cart item",
+          error.cause ? error.cause : error.message || "An error occurred while removing cart item",
         ]),
       );
     return;
@@ -146,7 +149,7 @@ const getCartItems = async (req: Request, res: Response) => {
       return;
     }
 
-    const items = await db
+    const cart = await db
       .select({
         id: CartItems.id,
         quantity: CartItems.quantity,
@@ -163,12 +166,12 @@ const getCartItems = async (req: Request, res: Response) => {
       .where(eq(CartItems.userId, userId))
       .execute();
 
-    if (items.length === 0) {
+    if (cart.length === 0) {
       res.status(200).json(ApiResponse(200, [], "Cart is empty"));
       return;
     }
 
-    const subtotal = items.reduce(
+    const subtotal = cart.reduce(
       (sum, r) => sum + Number(r.price ?? 0) * r.quantity,
       0,
     );
@@ -178,17 +181,17 @@ const getCartItems = async (req: Request, res: Response) => {
       .json(
         ApiResponse(
           200,
-          { items, subtotal },
+          { cart, subtotal },
           "Cart items retrieved successfully",
         ),
       );
     return;
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          "An error occurred while retrieving cart items",
+          error.cause ? error.cause : error.message || "An error occurred while retrieving cart items",
         ]),
       );
     return;
@@ -307,12 +310,12 @@ const updateCart = async (req: Request, res: Response) => {
       .status(200)
       .json(ApiResponse(200, cartItem, "Cart quantity updated successfully"));
     return;
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          "An error occurred while updating cart items",
+          error.cause ? error.cause : error.message || "An error occurred while updating cart items",
         ]),
       );
     return;

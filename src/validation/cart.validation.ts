@@ -1,10 +1,7 @@
 import z from "zod";
 
 const cartSchema = z.object({
-  userId: z.uuid().min(1, { message: "User ID is required" }),
-  bookId: z.uuid().min(1, {
-    message: "Book ID is required",
-  }),
+  bookId: z.string(),
   quantity: z
     .number()
     .int()

@@ -28,8 +28,8 @@ const addBook = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        ApiError(500, "Server error", req, [
-          error.message || "An error occurred while creating the book",
+        ApiError(500, "Intenal Server error", req, [
+          error.cause ? error.cause : error.message || "An error occurred while creating the book",
         ]),
       );
     return;
@@ -40,6 +40,15 @@ const updateBook = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const data = req.body;
+
+    if (!id) {
+      res
+        .status(400)
+        .json(
+          ApiError(400, "Invalid Book ID", req, ["Book ID is not provided"]),
+        );
+      return;
+    }
 
     const [book] = await db
       .update(Books)
@@ -63,8 +72,8 @@ const updateBook = async (req: Request, res: Response) => {
     res
       .status(500)
       .json(
-        ApiError(500, "Server error", req, [
-          error.message || "An error occurred while updating the book",
+        ApiError(500, "Intenal Server error", req, [
+          error.cause ? error.cause : error.message || "An error occurred while updating the book",
         ]),
       );
     return;
@@ -77,7 +86,18 @@ const getBooks = async (req: Request, res: Response) => {
     const offset = (page - 1) * limit;
 
     const books = await db
-      .select()
+      .select({
+        id: Books.id,
+        title: Books.title,
+        author: Books.author,
+        genre: Books.genre,
+        description: Books.description,
+        isbn: Books.isbn,
+        price: Books.price,
+        stock: Books.stock,
+        createdAt: Books.createdAt,
+        Reviews: Reviews,
+      })
       .from(Books)
       .leftJoin(Reviews, eq(Books.id, Reviews.bookId))
       .limit(limit)
@@ -133,7 +153,18 @@ const getSingleBook = async (_req: Request, res: Response) => {
     }
 
     const [book] = await db
-      .select()
+      .select({
+        id: Books.id,
+        title: Books.title,
+        author: Books.author,
+        genre: Books.genre,
+        description: Books.description,
+        isbn: Books.isbn,
+        price: Books.price,
+        stock: Books.stock,
+        createdAt: Books.createdAt,
+        Reviews: Reviews,
+      })
       .from(Books)
       .where(eq(Books.id, id))
       .leftJoin(Reviews, eq(Books.id, Reviews.bookId))

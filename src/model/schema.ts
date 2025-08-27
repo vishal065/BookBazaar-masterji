@@ -1,7 +1,6 @@
 export { userRoleEnum } from "./user.model";
 export { orderStatusEnum } from "./Orders.model";
 export { paymentStatusEnum } from "./payment.model";
-export { ApiKeys } from "./api-key.model";
 export { Books } from "./Books.model";
 export { CartItems } from "./Cart.model";
 export { Orders, orderItems } from "./Orders.model";
