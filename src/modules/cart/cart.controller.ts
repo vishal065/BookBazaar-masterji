@@ -35,6 +35,17 @@ const addToCart = async (req: Request, res: Response) => {
       return;
     }
 
+    if (book.stock < data.quantity) {
+      res
+        .status(400)
+        .json(
+          ApiError(400, "Insufficient stock", req, [
+            "Not enough stock available for the requested quantity",
+          ]),
+        );
+      return;
+    }
+
     const [cart] = await db
       .select()
       .from(CartItems)
@@ -71,14 +82,15 @@ const addToCart = async (req: Request, res: Response) => {
       .status(200)
       .json(ApiResponse(200, cartItem, "Book added to cart successfully"));
     return;
-
   } catch (error: any) {
     console.error("Error adding to cart:", error);
     res
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while retrieving the book",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while retrieving the book",
         ]),
       );
     return;
@@ -131,7 +143,9 @@ const removeFromCart = async (req: Request, res: Response) => {
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while removing cart item",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while removing cart item",
         ]),
       );
     return;
@@ -191,7 +205,9 @@ const getCartItems = async (req: Request, res: Response) => {
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while retrieving cart items",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while retrieving cart items",
         ]),
       );
     return;
@@ -315,7 +331,9 @@ const updateCart = async (req: Request, res: Response) => {
       .status(500)
       .json(
         ApiError(500, "Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while updating cart items",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while updating cart items",
         ]),
       );
     return;

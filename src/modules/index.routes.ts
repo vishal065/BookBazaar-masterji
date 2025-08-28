@@ -5,7 +5,6 @@ import { CartRouter } from "./cart/cart.route";
 import { ReviewRouter } from "./review/review.routes";
 import { OrderRouter } from "./order/order.routes";
 
-
 const router = Router();
 
 router.use("/auth", AuthRouter);

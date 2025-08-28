@@ -112,6 +112,8 @@ const placeOrder = async (req: Request, res: Response) => {
 
       if (orderItemsPayload.length) {
         await tx.insert(orderItems).values(orderItemsPayload);
+        // clear user cart
+        await tx.delete(CartItems).where(eq(CartItems.userId, userId));
       }
 
       if (outOfStockItems.length > 0) {
@@ -125,7 +127,7 @@ const placeOrder = async (req: Request, res: Response) => {
             provider: "RAZORPAY",
             amount: payment.amount,
             status: payment.status,
-            razorpayOrderId: order.id,
+            ...Razorpay,
           },
         };
       } else
@@ -137,7 +139,7 @@ const placeOrder = async (req: Request, res: Response) => {
             provider: "RAZORPAY",
             amount: payment.amount,
             status: payment.status,
-            razorpayOrderId: order.id,
+            ...Razorpay,
           },
         };
     });
@@ -145,17 +147,19 @@ const placeOrder = async (req: Request, res: Response) => {
     res
       .status(201)
       .json(ApiResponse(201, created, "Order placed successfully"));
-  } catch (err) {
-    if (err instanceof Error) {
+  } catch (error: any) {
+    if (error instanceof Error) {
       res
         .status(500)
-        .json(ApiError(500, "Internal Server Error", req, [err.message]));
+        .json(ApiError(500, "Internal Server Error", req, [error.message]));
     } else {
       res
         .status(500)
         .json(
           ApiError(500, "Internal Server Error", req, [
-            "An unexpected error occurred",
+            error.cause
+              ? error.cause
+              : error.message || "An unexpected error occurred",
           ]),
         );
     }
@@ -225,7 +229,7 @@ const verifyPayment = async (req: Request, res: Response) => {
       return;
     }
 
-    if (order.status === OrderStatus.fullfilled) {
+    if (order.status === OrderStatus.fulfilled) {
       res.status(200).json(ApiResponse(200, {}, "Order already fulfilled"));
       return;
     }
@@ -248,7 +252,7 @@ const verifyPayment = async (req: Request, res: Response) => {
       .from(Books)
       .where(inArray(Books.id, bookIds));
 
-    // Transaction: subtract stock, update ordert, clear cart, send email
+    // Transaction: subtract stock, update ordert, send email
     await db.transaction(async (tx) => {
       // subtract stock
       for (const it of items) {
@@ -258,20 +262,21 @@ const verifyPayment = async (req: Request, res: Response) => {
           .set({ stock: book.stock - it.quantity })
           .where(eq(Books.id, it.bookId));
       }
-
+      console.log("000000000000000000000000000");
       // update order and payment to paid
       await tx
         .update(Orders)
-        .set({ status: OrderStatus.fullfilled, updatedAt: new Date() })
+        .set({ status: OrderStatus.fulfilled, updatedAt: new Date() })
         .where(and(eq(Orders.id, order.id), eq(Orders.userId, userId)));
+
+      console.log("111111111111111111111111111");
 
       await tx
         .update(Payments)
         .set({ status: PaymentStatus.Paid, updatedAt: new Date() })
         .where(eq(Payments.providerOrderId, razorpay_order_id));
 
-      // clear user cart
-      await tx.delete(CartItems).where(eq(CartItems.userId, userId));
+      console.log("222222222222222222222222222222222222");
     });
 
     // send email
@@ -285,22 +290,26 @@ const verifyPayment = async (req: Request, res: Response) => {
       // Generate HTML for email
       const emailHTML = generateOrderEmailHTML(orderDetails, itemLines);
 
+      console.log("333333333333333333333333333333333333");
+
       await sendOrderConfirmationEmail(
         req.user?.email,
         `Your BookBazaar order ${order.id} is confirmed`,
         emailHTML,
       );
     }
-
+    console.log("4444444444444444444444444444444444444444");
     res.status(200).json(ApiResponse(200, {}, "Order paid successfully"));
     return;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error verifying payment:", error);
     res
       .status(500)
       .json(
         ApiError(500, "Internal Server Error", req, [
-          "An unexpected error occurred",
+          error.cause
+            ? error.cause
+            : error.message || "An unexpected error occurred",
         ]),
       );
     return;
@@ -352,7 +361,7 @@ const listMyOrders = async (req: Request, res: Response) => {
           "Orders fetched",
         ),
       );
-  } catch (err) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
@@ -360,9 +369,13 @@ const listMyOrders = async (req: Request, res: Response) => {
           500,
           "Internal Server Error",
           req,
-          err instanceof Error
-            ? [err.message]
-            : ["An unexpected error occurred"],
+          error instanceof Error
+            ? [error.message]
+            : [
+                error.cause
+                  ? error.cause
+                  : error.message || "An unexpected error occurred",
+              ],
         ),
       );
     return;
@@ -419,7 +432,7 @@ const getOrderById = async (req: Request, res: Response) => {
       .status(200)
       .json(ApiResponse(200, { order, items }, "Order details fetched"));
     return;
-  } catch (err) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
@@ -427,9 +440,13 @@ const getOrderById = async (req: Request, res: Response) => {
           500,
           "Internal Server Error",
           req,
-          err instanceof Error
-            ? [err.message]
-            : ["An unexpected error occurred"],
+          error instanceof Error
+            ? [error.message]
+            : [
+                error.cause
+                  ? error.cause
+                  : error.message || "An unexpected error occurred",
+              ],
         ),
       );
     return;
@@ -481,13 +498,13 @@ const cancelOrder = async (req: Request, res: Response) => {
 
     let message = "Order cancelled successfully";
 
-    if (order.status === OrderStatus.fullfilled) {
+    if (order.status === OrderStatus.fulfilled) {
       message = "Order cancelled and payment refunded initialized";
     }
 
     res.status(200).json(ApiResponse(200, updatedOrder, message));
     return;
-  } catch (err) {
+  } catch (error: any) {
     res
       .status(500)
       .json(
@@ -495,9 +512,13 @@ const cancelOrder = async (req: Request, res: Response) => {
           500,
           "Internal Server Error",
           req,
-          err instanceof Error
-            ? [err.message]
-            : ["An unexpected error occurred"],
+          error instanceof Error
+            ? [error.message]
+            : [
+                error.cause
+                  ? error.cause
+                  : error.message || "An unexpected error occurred",
+              ],
         ),
       );
     return;

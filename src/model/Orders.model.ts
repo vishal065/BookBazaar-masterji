@@ -11,7 +11,7 @@ import { Users } from "./user.model";
 
 export const orderStatusEnum = pgEnum("status", [
   "pending",
-  "fullfilled",
+  "fulfilled",
   "cancelled",
   "failed",
 ]);

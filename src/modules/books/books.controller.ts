@@ -29,7 +29,9 @@ const addBook = async (req: Request, res: Response) => {
       .status(500)
       .json(
         ApiError(500, "Intenal Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while creating the book",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while creating the book",
         ]),
       );
     return;
@@ -73,7 +75,9 @@ const updateBook = async (req: Request, res: Response) => {
       .status(500)
       .json(
         ApiError(500, "Intenal Server error", req, [
-          error.cause ? error.cause : error.message || "An error occurred while updating the book",
+          error.cause
+            ? error.cause
+            : error.message || "An error occurred while updating the book",
         ]),
       );
     return;

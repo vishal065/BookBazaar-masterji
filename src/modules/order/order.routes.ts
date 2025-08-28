@@ -8,13 +8,39 @@ import {
   placeOrder,
   verifyPayment,
 } from "./order.controller";
+import { rbac } from "../../middlewares/rbac.middleware";
 
 const router = express.Router();
 
-router.post("/place-order", authMiddleware, asyncHandler(placeOrder));
-router.put("/payment", authMiddleware, asyncHandler(verifyPayment));
-router.get("/get", authMiddleware, asyncHandler(listMyOrders));
-router.get("/get/:id", authMiddleware, asyncHandler(getOrderById));
-router.put("/cancel/:id", authMiddleware, asyncHandler(cancelOrder));
+router.post(
+  "/place-order",
+  authMiddleware,
+  rbac("CUSTOMER"),
+  asyncHandler(placeOrder),
+);
+router.put(
+  "/payment-verify",
+  authMiddleware,
+  rbac("CUSTOMER"),
+  asyncHandler(verifyPayment),
+);
+router.get(
+  "/get",
+  authMiddleware,
+  rbac("CUSTOMER"),
+  asyncHandler(listMyOrders),
+);
+router.get(
+  "/get/:id",
+  authMiddleware,
+  rbac("CUSTOMER"),
+  asyncHandler(getOrderById),
+);
+router.put(
+  "/cancel/:id",
+  authMiddleware,
+  rbac("CUSTOMER"),
+  asyncHandler(cancelOrder),
+);
 
 export { router as OrderRouter };

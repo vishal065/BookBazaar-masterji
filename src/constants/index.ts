@@ -1,6 +1,6 @@
 export enum OrderStatus {
   Pending = "pending",
-  fullfilled = "fullfilled",
+  fulfilled = "fulfilled",
   Cancelled = "cancelled",
   Failed = "failed",
 }
@@ -10,4 +10,9 @@ export enum PaymentStatus {
   Paid = "paid",
   Failed = "failed",
   Refunded = "refunded",
+}
+
+export enum UserRole {
+  Admin = "ADMIN",
+  Customer = "CUSTOMER",
 }
