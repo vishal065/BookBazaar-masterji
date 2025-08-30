@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "nodemon",
     "dev2": "nodemon --watch src --ext ts --exec 'ts-node --source-map -r dotenv/config -r tsconfig-paths/register src/index.ts'",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "build": "tsc",
     "format": "prettier --write .",
     "migrate:generate": "drizzle-kit generate",
