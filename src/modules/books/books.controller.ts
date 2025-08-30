@@ -100,7 +100,19 @@ const getBooks = async (req: Request, res: Response) => {
         price: Books.price,
         stock: Books.stock,
         createdAt: Books.createdAt,
-        Reviews: Reviews,
+        Reviews: sql/*sql*/`
+      COALESCE(
+        (
+          SELECT json_agg(r ORDER BY r.created_at DESC)
+          FROM (
+            SELECT * FROM reviews r
+            WHERE r.book_id = ${Books.id}
+            ORDER BY r.created_at DESC
+            LIMIT 5
+          ) r
+        ), '[]'
+      )
+    `.as("reviews"),
       })
       .from(Books)
       .leftJoin(Reviews, eq(Books.id, Reviews.bookId))
@@ -167,7 +179,19 @@ const getSingleBook = async (_req: Request, res: Response) => {
         price: Books.price,
         stock: Books.stock,
         createdAt: Books.createdAt,
-        Reviews: Reviews,
+        Reviews: sql/*sql*/`
+      COALESCE(
+        (
+          SELECT json_agg(r ORDER BY r.created_at DESC)
+          FROM (
+            SELECT * FROM reviews r
+            WHERE r.book_id = ${Books.id}
+            ORDER BY r.created_at DESC
+            LIMIT 5
+          ) r
+        ), '[]'
+      )
+    `.as("reviews"),
       })
       .from(Books)
       .where(eq(Books.id, id))

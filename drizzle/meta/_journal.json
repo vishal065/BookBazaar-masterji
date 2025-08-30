@@ -15,6 +15,20 @@
       "when": 1756414508470,
       "tag": "0001_giant_the_hunter",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1756552868896,
+      "tag": "0002_silent_timeslip",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1756562152318,
+      "tag": "0003_acoustic_toad_men",
+      "breakpoints": true
     }
   ]
 }

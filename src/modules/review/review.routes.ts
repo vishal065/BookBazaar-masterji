@@ -3,18 +3,30 @@ import asyncHandler from "../../utils/asyncHandler";
 import { authMiddleware } from "../../middlewares/auth.middleware";
 import { addReview, deleteReview, updateReview } from "./review.controller";
 import { rbac } from "../../middlewares/rbac.middleware";
+import { validateBody } from "../../middlewares/validateBody.middleware";
+import { reviewSchema } from "../../validation/reviewSchema";
 
 const router = express.Router();
 
 router
-  .route("/add")
-  .post(authMiddleware, rbac("CUSTOMER"), asyncHandler(addReview));
+  .route("/add/:bookId")
+  .post(
+    authMiddleware,
+    rbac("CUSTOMER"),
+    validateBody(reviewSchema),
+    asyncHandler(addReview),
+  );
 router.route("/getAll").get(authMiddleware);
 router
-  .route("/update/:id")
-  .put(authMiddleware, rbac("CUSTOMER"), asyncHandler(updateReview));
+  .route("/update/:reviewId")
+  .put(
+    authMiddleware,
+    rbac("CUSTOMER"),
+    validateBody(reviewSchema),
+    asyncHandler(updateReview),
+  );
 router
-  .route("/remove/:id")
+  .route("/remove/:reviewId")
   .delete(authMiddleware, rbac("CUSTOMER"), asyncHandler(deleteReview));
 
 export { router as ReviewRouter };

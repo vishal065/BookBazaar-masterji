@@ -1,6 +1,6 @@
 export enum OrderStatus {
   Pending = "pending",
-  fulfilled = "fulfilled",
+  Fulfilled = "fulfilled",
   Cancelled = "cancelled",
   Failed = "failed",
 }

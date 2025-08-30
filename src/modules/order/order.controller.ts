@@ -229,7 +229,7 @@ const verifyPayment = async (req: Request, res: Response) => {
       return;
     }
 
-    if (order.status === OrderStatus.fulfilled) {
+    if (order.status === OrderStatus.Fulfilled) {
       res.status(200).json(ApiResponse(200, {}, "Order already fulfilled"));
       return;
     }
@@ -262,21 +262,16 @@ const verifyPayment = async (req: Request, res: Response) => {
           .set({ stock: book.stock - it.quantity })
           .where(eq(Books.id, it.bookId));
       }
-      console.log("000000000000000000000000000");
       // update order and payment to paid
       await tx
         .update(Orders)
-        .set({ status: OrderStatus.fulfilled, updatedAt: new Date() })
+        .set({ status: OrderStatus.Fulfilled, updatedAt: new Date() })
         .where(and(eq(Orders.id, order.id), eq(Orders.userId, userId)));
-
-      console.log("111111111111111111111111111");
 
       await tx
         .update(Payments)
         .set({ status: PaymentStatus.Paid, updatedAt: new Date() })
         .where(eq(Payments.providerOrderId, razorpay_order_id));
-
-      console.log("222222222222222222222222222222222222");
     });
 
     // send email
@@ -357,7 +352,7 @@ const listMyOrders = async (req: Request, res: Response) => {
       .json(
         ApiResponse(
           200,
-          { items: orders, page, pageSize, total: Number(count) },
+          { orders: orders, page, pageSize, total: Number(count) },
           "Orders fetched",
         ),
       );
@@ -414,7 +409,7 @@ const getOrderById = async (req: Request, res: Response) => {
       return;
     }
 
-    const items = await db
+    const order_items = await db
       .select({
         id: orderItems.id,
         bookId: orderItems.bookId,
@@ -430,7 +425,7 @@ const getOrderById = async (req: Request, res: Response) => {
 
     res
       .status(200)
-      .json(ApiResponse(200, { order, items }, "Order details fetched"));
+      .json(ApiResponse(200, { order, order_items }, "Order details fetched"));
     return;
   } catch (error: any) {
     res
@@ -498,7 +493,7 @@ const cancelOrder = async (req: Request, res: Response) => {
 
     let message = "Order cancelled successfully";
 
-    if (order.status === OrderStatus.fulfilled) {
+    if (order.status === OrderStatus.Fulfilled) {
       message = "Order cancelled and payment refunded initialized";
     }
 

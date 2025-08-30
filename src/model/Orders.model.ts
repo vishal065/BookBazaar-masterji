@@ -9,7 +9,7 @@ import {
 import { Books } from "./Books.model";
 import { Users } from "./user.model";
 
-export const orderStatusEnum = pgEnum("status", [
+export const orderStatusEnum = pgEnum("order_status", [
   "pending",
   "fulfilled",
   "cancelled",

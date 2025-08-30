@@ -4,11 +4,13 @@ import { db } from "../../config/db";
 import { Reviews } from "../../model/Reviews.model";
 import { ApiError } from "../../utils/ApiError";
 import { ApiResponse } from "../../utils/ApiResponse";
+import { orderItems, Orders } from "../../model/Orders.model";
 
 const addReview = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id;
-    const { bookId, rating, comment } = req.body;
+    const bookId = req.params.bookId;
+    const { rating, comment } = req.body;
 
     if (!userId) {
       res
@@ -22,6 +24,24 @@ const addReview = async (req: Request, res: Response) => {
         .json(
           ApiError(400, "Bad Request", req, [
             "Book ID and rating are required",
+          ]),
+        );
+      return;
+    }
+
+    const [purchased] = await db
+      .select({ orderId: Orders.id })
+      .from(Orders)
+      .innerJoin(orderItems, eq(Orders.id, orderItems.orderId))
+      .where(and(eq(Orders.userId, userId), eq(orderItems.bookId, bookId)))
+      .limit(1);
+
+    if (!purchased) {
+      res
+        .status(400)
+        .json(
+          ApiError(400, "Bad Request", req, [
+            "You can only review books you have purchased",
           ]),
         );
       return;
@@ -53,17 +73,37 @@ const addReview = async (req: Request, res: Response) => {
       .json(ApiResponse(201, undefined, "Review added successfully"));
     return;
   } catch (error: any) {
-    res
-      .status(500)
-      .json(
-        ApiError(
-          500,
-          "Internal Server Error",
-          req,
-          error.message || ["An error occurred while adding the review"],
-        ),
-      );
-    return;
+    if (
+      error.cause.code === "23505" &&
+      error.cause.constraint === "unique_review"
+    ) {
+      res
+        .status(400)
+        .json(
+          ApiError(400, "Bad Request", req, [
+            "You have already reviewed this book",
+          ]),
+        );
+      return;
+    } else {
+      res
+        .status(500)
+        .json(
+          ApiError(
+            500,
+            "Internal Server Error",
+            req,
+            error instanceof Error
+              ? [error.cause]
+              : [
+                  error.cause
+                    ? error.cause
+                    : error.message || "An unexpected error occurred",
+                ],
+          ),
+        );
+      return;
+    }
   }
 };
 

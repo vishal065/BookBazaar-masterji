@@ -9,7 +9,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { Orders } from "./Orders.model";
 
-export const paymentStatusEnum = pgEnum("status", [
+export const paymentStatusEnum = pgEnum("payment_status", [
   "pending",
   "paid",
   "failed",
