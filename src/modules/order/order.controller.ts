@@ -285,15 +285,14 @@ const verifyPayment = async (req: Request, res: Response) => {
       // Generate HTML for email
       const emailHTML = generateOrderEmailHTML(orderDetails, itemLines);
 
-      console.log("333333333333333333333333333333333333");
-
+    
       await sendOrderConfirmationEmail(
         req.user?.email,
         `Your BookBazaar order ${order.id} is confirmed`,
         emailHTML,
       );
     }
-    console.log("4444444444444444444444444444444444444444");
+  
     res.status(200).json(ApiResponse(200, {}, "Order paid successfully"));
     return;
   } catch (error: any) {
@@ -322,11 +321,11 @@ const listMyOrders = async (req: Request, res: Response) => {
     }
 
     const page = Math.max(1, Number(req.query.page ?? 1));
-    const pageSize = Math.min(
+    const limit = Math.min(
       100,
-      Math.max(1, Number(req.query.pageSize ?? 10)),
+      Math.max(1, Number(req.query.limit ?? 10)),
     );
-    const offset = (page - 1) * pageSize;
+    const offset = (page - 1) * limit;
 
     const orders = await db
       .select({
@@ -338,7 +337,7 @@ const listMyOrders = async (req: Request, res: Response) => {
       .from(Orders)
       .where(eq(Orders.userId, userId))
       .orderBy(desc(Orders.createdAt))
-      .limit(pageSize)
+      .limit(limit)
       .offset(offset);
 
     const result = await db.execute<{ count: number }>(
@@ -352,7 +351,7 @@ const listMyOrders = async (req: Request, res: Response) => {
       .json(
         ApiResponse(
           200,
-          { orders: orders, page, pageSize, total: Number(count) },
+          { orders: orders, page, limit, total: Number(count) },
           "Orders fetched",
         ),
       );

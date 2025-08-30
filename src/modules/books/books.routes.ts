@@ -4,6 +4,7 @@ import {
   deleteBook,
   getBooks,
   getSingleBook,
+  searchBooks,
   updateBook,
 } from "./books.controller";
 import { authMiddleware } from "../../middlewares/auth.middleware";
@@ -36,6 +37,8 @@ router
 router.route("/getAll").get(asyncHandler(getBooks));
 
 router.route("/get/:id").get(asyncHandler(getSingleBook));
+
+router.route("/search").get(asyncHandler(searchBooks));
 
 router
   .route("/delete/:id")

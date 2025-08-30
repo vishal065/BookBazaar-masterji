@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, ilike, sql } from "drizzle-orm";
 import { db } from "../../config/db";
 import { Books } from "../../model/Books.model";
 import { ApiResponse } from "../../utils/ApiResponse";
@@ -267,4 +267,41 @@ const deleteBook = async (_req: Request, res: Response) => {
   }
 };
 
-export { addBook, updateBook, getBooks, getSingleBook, deleteBook };
+const searchBooks = async (req: Request, res: Response) => {
+  try {
+    const { title, author, genre, isbn } = req.query;
+
+    const conditions = [];
+
+    // I dont need to manage uppercase and lowercase because ilike which is case insensitive
+    if (title) conditions.push(ilike(Books.title, `%${title}%`));
+    if (author) conditions.push(ilike(Books.author, `%${author}%`));
+    if (genre) conditions.push(ilike(Books.genre, `%${genre}%`));
+    if (isbn) conditions.push(eq(Books.isbn, String(isbn)));
+
+    const books = await db
+      .select()
+      .from(Books)
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    if (books.length === 0) {
+      res.status(404).json(ApiResponse(404, [], "No books found"));
+      return;
+    }
+
+    res.status(200).json(ApiResponse(200, books, "Books fetched successfully"));
+    return
+  } catch (error: any) {
+    res
+      .status(500)
+      .json(
+        ApiError(500, "Server error", req, [
+          error.cause || error.message || "An error occurred while searching for books",
+        ]),
+      );
+    return;
+
+  }
+};
+
+export { addBook, updateBook, getBooks, getSingleBook, deleteBook, searchBooks };

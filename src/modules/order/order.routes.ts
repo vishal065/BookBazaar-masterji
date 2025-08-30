@@ -9,37 +9,38 @@ import {
   verifyPayment,
 } from "./order.controller";
 import { rbac } from "../../middlewares/rbac.middleware";
+import { UserRole } from "../../constants";
 
 const router = express.Router();
 
 router.post(
   "/place-order",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(placeOrder),
 );
 router.put(
   "/payment-verify",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(verifyPayment),
 );
 router.get(
   "/get",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(listMyOrders),
 );
 router.get(
   "/get/:id",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(getOrderById),
 );
 router.put(
   "/cancel/:id",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(cancelOrder),
 );
 

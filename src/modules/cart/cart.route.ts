@@ -10,33 +10,34 @@ import {
 import { validateBody } from "../../middlewares/validateBody.middleware";
 import { cartSchema } from "../../validation/cart.validation";
 import { rbac } from "../../middlewares/rbac.middleware";
+import { UserRole } from "../../constants";
 
 const router = express.Router();
 
 router.post(
   "/add",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   validateBody(cartSchema),
   asyncHandler(addToCart),
 );
 router.put(
   "/update/:id",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   validateBody(cartSchema),
   asyncHandler(updateCart),
 );
 router.get(
   "/get",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(getCartItems),
 );
 router.delete(
   "/remove/:id",
   authMiddleware,
-  rbac("CUSTOMER"),
+  rbac(UserRole.Customer),
   asyncHandler(removeFromCart),
 );
 

@@ -1,0 +1,767 @@
+{
+	"info": {
+		"_postman_id": "18fe4c59-7c96-4d02-9791-f21ed54d79f3",
+		"name": "BookBazaar-masterji",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32310643"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    //Remove Admin key to register as customer\r\n    \"email\":\"user2@gmail.com\",\r\n    \"password\":\"Qwertyui@6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/register?superAdminKey=96321",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							],
+							"query": [
+								{
+									"key": "superAdminKey",
+									"value": "96321"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"user2@gmail.com\",\r\n    \"password\":\"Qwertyui@6\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "logout",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get profile",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/auth/me",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Api-key",
+			"item": [
+				{
+					"name": "genrate & regenrate api-key",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/api-key/generate",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"api-key",
+								"generate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get api-key",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/api-key",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"api-key"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Books",
+			"item": [
+				{
+					"name": "Add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// {\r\n//     \"title\": \"The Great Adventure\",\r\n//     \"author\": \"John Doe\",\r\n//     \"genre\": \"Fiction\",\r\n//     \"description\": \"A thrilling tale of mystery and discovery.\",\r\n//     \"isbn\": \"978-1234567890\",       //unique\r\n//     \"price\": 15.99,\r\n//     \"stock\": 10\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"The Pragmatic Programmer\",\r\n//   \"author\": \"Andrew Hunt, David Thomas\",\r\n//   \"genre\": \"Programming\",\r\n//   \"description\": \"A classic guide to software development best practices and principles.\",\r\n//   \"isbn\": \"978-0201616224\",\r\n//   \"price\": 42.99,\r\n//   \"stock\": 100\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"Clean Code\",\r\n//   \"author\": \"Robert C. Martin\",\r\n//   \"isbn\": \"978-0132350884\",\r\n//   \"price\": 35.5,\r\n//   \"stock\": 50\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"The Alchemist\",\r\n//   \"author\": \"Paulo Coelho\",\r\n//   \"genre\": \"Fiction\",\r\n//   \"description\": \"A fable about following your dreams.\",\r\n//   \"isbn\": \"978-0061122415\",\r\n//   \"price\": 10.99,\r\n//   \"stock\": 200\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"A Brief History of Time\",\r\n//   \"author\": \"Stephen Hawking\",\r\n//   \"genre\": \"Science\",\r\n//   \"description\": \"Explains cosmology for the general public.\",\r\n//   \"isbn\": \"978-0553380163\",\r\n//   \"price\": 15.49,\r\n//   \"stock\": 75\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"Refactoring\",\r\n//   \"author\": \"Martin Fowler\",\r\n//   \"isbn\": \"978-0201485677\",\r\n//   \"price\": 49.99\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"Sapiens: A Brief History of Humankind\",\r\n//   \"author\": \"Yuval Noah Harari\",\r\n//   \"genre\": \"History\",\r\n//   \"description\": \"Explores the history and impact of Homo sapiens.\",\r\n//   \"isbn\": \"978-0062316097\",\r\n//   \"price\": 18.75,\r\n//   \"stock\": 120\r\n// }\r\n//---------------------------------------------\r\n// {\r\n//   \"title\": \"Harry Potter and the Philosopher's Stone\",\r\n//   \"author\": \"J.K. Rowling\",\r\n//   \"genre\": \"Fantasy\",\r\n//   \"description\": \"The first book in the Harry Potter series.\",\r\n//   \"isbn\": \"978-0747532699\",\r\n//   \"price\": 8.99,\r\n//   \"stock\": 300\r\n// }\r\n\r\n\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"The Great Adventure 2\",\r\n    \"author\": \"John Doe\",\r\n    \"genre\": \"Fiction\",\r\n    \"description\": \"A thrilling tale of mystery and discovery.\",\r\n    \"isbn\": \"978-1234567890\",\r\n    \"price\": 15.99,\r\n    \"stock\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/update/4b61ac18-e327-4523-83e6-11867329ef5e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"update",
+								"4b61ac18-e327-4523-83e6-11867329ef5e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/getAll?page=1&limit=10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"getAll"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get single book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/get/a7173c9d-c7b4-4a89-83e0-dae54c7efb9b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"get",
+								"a7173c9d-c7b4-4a89-83e0-dae54c7efb9b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "search book",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/search?title=The Great Adventure&genre=Fiction&isbn=978-1234567890",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"search"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "The Great Adventure"
+								},
+								{
+									"key": "author",
+									"value": "",
+									"disabled": true
+								},
+								{
+									"key": "genre",
+									"value": "Fiction"
+								},
+								{
+									"key": "isbn",
+									"value": "978-1234567890"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/books/delete/185f3b4b-5645-433d-95c8-4664e901f7fb",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"books",
+								"delete",
+								"185f3b4b-5645-433d-95c8-4664e901f7fb"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "Add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//this api only add to cart to change the quantity please use the update api so that u cant hit add multiple time for same book\r\n{\r\n    \"bookId\": \"a7173c9d-c7b4-4a89-83e0-dae54c7efb9b\",\r\n    \"quantity\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/cart/add",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"cart",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"bookId\": \"c93953e3-164e-46c2-9197-3a9553b25248\",\r\n    \"quantity\": 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/cart/update/f774d251-2c8f-484f-9cbb-4218529c0564",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"cart",
+								"update",
+								"f774d251-2c8f-484f-9cbb-4218529c0564"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/cart/get",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"cart",
+								"get"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "remove book",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/cart/remove/f774d251-2c8f-484f-9cbb-4218529c0564",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"cart",
+								"remove",
+								"f774d251-2c8f-484f-9cbb-4218529c0564"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "order & payment",
+			"item": [
+				{
+					"name": "place-order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/place-order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"place-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verifyPayment",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"razorpay_order_id\": \"f6d2a3cb-3b73-404d-8073-fb83428b1633\",\r\n    \"razorpay_payment_id\": \"713ec8b8-2df2-4bd0-aa4b-945dda271bc5\",\r\n    \"razorpay_signature\": \"ca4c8091-e14a-4a29-b3a8-748a89d0ca8f\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/payment-verify",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"payment-verify"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "listMyOrders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/get?page&limit",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"get"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": null
+								},
+								{
+									"key": "limit",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/get/334bc68e-9bd2-411f-a94f-c91eae45927d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"get",
+								"334bc68e-9bd2-411f-a94f-c91eae45927d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/cancel/334bc68e-9bd2-411f-a94f-c91eae45927d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"cancel",
+								"334bc68e-9bd2-411f-a94f-c91eae45927d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "reviews",
+			"item": [
+				{
+					"name": "add-review",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//----------->>>> bookId in params\r\n{\r\n    \"rating\": 4,\r\n    \"comment\": \"good book\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/reviews/add/a7173c9d-c7b4-4a89-83e0-dae54c7efb9b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"add",
+								"a7173c9d-c7b4-4a89-83e0-dae54c7efb9b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update-review",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "//----------->>>> id in params\r\n{\r\n    \"rating\": 5,\r\n    \"comment\": \"v.good book\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/v1/reviews/update/8d93688a-e021-4cc5-aceb-5b4ca0022756",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"update",
+								"8d93688a-e021-4cc5-aceb-5b4ca0022756"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete review",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/reviews/remove/8d93688a-e021-4cc5-aceb-5b4ca0022756",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"reviews",
+								"remove",
+								"8d93688a-e021-4cc5-aceb-5b4ca0022756"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getOrderById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/get/334bc68e-9bd2-411f-a94f-c91eae45927d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"get",
+								"334bc68e-9bd2-411f-a94f-c91eae45927d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "cancel order",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/v1/orders/cancel/334bc68e-9bd2-411f-a94f-c91eae45927d",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"v1",
+								"orders",
+								"cancel",
+								"334bc68e-9bd2-411f-a94f-c91eae45927d"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
