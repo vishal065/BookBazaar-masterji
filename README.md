@@ -183,7 +183,13 @@ npm install
 
 ```
 
-2.  Development:
+----------
+
+**2.  Create `.env` and take the variable name from .env.sample and fill it:**
+
+----------
+
+3.  Development:
     
 
 ```bash
