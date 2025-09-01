@@ -152,7 +152,12 @@ const getMe = async (req: Request, res: Response) => {
       return;
     }
     const [user] = await db
-      .select()
+      .select({
+        id: Users.id,
+        email: Users.email,
+        role: Users.role,
+        createdAt: Users.createdAt,
+      })
       .from(Users)
       .where(eq(Users.id, req.user.id))
       .limit(1);
